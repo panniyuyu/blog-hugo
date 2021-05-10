@@ -10,10 +10,8 @@ RUN git clone https://github.com/gohugoio/hugo.git --progress --verbose && \
 # init blog
 WORKDIR /usr/local/blog
 
-RUN git clone https://github.com/panniyuyu/blog-hugo.git
+RUN git clone --recursive https://github.com/panniyuyu/blog-hugo.git --progress --verbose
 
 WORKDIR /usr/local/blog/blog-hugo
 
-#EXPOSE 1313
-
-#CMD ["/usr/local/bin/hugo server"] 
+CMD ["run.sh"] 
