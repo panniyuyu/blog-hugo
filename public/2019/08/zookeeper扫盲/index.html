@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Zookeeper扫盲 - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="Zookeeper扫盲" />
+<meta property="og:description" content="Zookeeper 是一个分布式协调服务框架，这句话对于刚接触ZK（Zookeeper下文简称ZK）的我来说太抽象了，很难理解，只知道它能提供一些服务能够实现" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-08-29T15:23:15&#43;08:00" />
+<meta property="article:modified_time" content="2019-08-29T15:23:15&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="Zookeeper扫盲"/>
+<meta name="twitter:description" content="Zookeeper 是一个分布式协调服务框架，这句话对于刚接触ZK（Zookeeper下文简称ZK）的我来说太抽象了，很难理解，只知道它能提供一些服务能够实现"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" /><link rel="prev" href="https://example.com/2019/08/cap%E5%92%8Cbase/" /><link rel="next" href="https://example.com/2019/09/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Zookeeper扫盲",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2019\/08\/zookeeper%E6%89%AB%E7%9B%B2\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "分布式","wordcount":  2183 ,
+        "url": "https:\/\/example.com\/2019\/08\/zookeeper%E6%89%AB%E7%9B%B2\/","datePublished": "2019-08-29T15:23:15+08:00","dateModified": "2019-08-29T15:23:15+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Zookeeper扫盲</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E5%90%8E%E7%AB%AF/"><i class="far fa-folder fa-fw"></i>后端</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2019-08-29">2019-08-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2183 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#zookeeper">Zookeeper</a></li>
+        <li><a href="#入门">入门</a>
+          <ul>
+            <li><a href="#数据结构">数据结构</a>
+              <ul>
+                <li><a href="#znode的类型">znode的类型</a></li>
+              </ul>
+            </li>
+            <li><a href="#通知机制">通知机制</a></li>
+          </ul>
+        </li>
+        <li><a href="#使用场景">使用场景</a>
+          <ul>
+            <li><a href="#命名服务">命名服务</a></li>
+            <li><a href="#配置管理">配置管理</a></li>
+            <li><a href="#分布式锁">分布式锁</a></li>
+          </ul>
+        </li>
+        <li><a href="#选举算法">选举算法</a>
+          <ul>
+            <li><a href="#zk节点的状态">ZK节点的状态</a></li>
+            <li><a href="#选举过程">选举过程</a></li>
+          </ul>
+        </li>
+        <li><a href="#安装与启动">安装与启动</a></li>
+        <li><a href="#最后">最后</a></li>
+        <li><a href="#参考资料">参考资料</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="zookeeper">Zookeeper</h3>
+<p>是一个分布式协调服务框架，这句话对于刚接触ZK（Zookeeper下文简称ZK）的我来说太抽象了，很难理解，只知道它能提供一些服务能够实现配置管理、命名服务、分布式锁等等，也就是在这些场景下会使用到ZK，这样说好像还是很难理解；之后，我找到了一个比较好理解的点，就是从CAP理论的角度，这需要对CAP有些了解，提前做了功课(<a href="http://yywang.top/2019/08/26/CAP%E5%92%8CBASE/#more" target="_blank" rel="noopener noreffer">CAP和BASE</a>)，简单来说在分布式系统中出现网络故障时，最多满足其中的两项，而P是必须要满足的，那么就需要从CP和AP中做选择了；ZK就是可保证CP的框架，最后我的理解就是ZK通过特定的数据结构，封装一系列算法通过API的方式提供分布式环境数据一致性的服务，所有需要数据一致性的场景都可以使用ZK，也就是上面提到的配置管理、命名服务、分布式锁等等场景</p>
+<h3 id="入门">入门</h3>
+<h4 id="数据结构">数据结构</h4>
+<p>ZK提供了一套类似于文件目录的数据结构，叫做多层级的节点命名空间，每个节点（ZK中称为znode）都可以存放数据且每个节点下都有若干个子节点，听起来和树的结构差不多，其实也一样，目录也是一种树结构的实现，znode可以理解为文件夹，文件夹中可以存放文件（znode可以存放数据），也可以存放文件夹（znode也可以存放znode）</p>
+<h5 id="znode的类型">znode的类型</h5>
+<ul>
+<li>PERSISTENT&ndash;持久化目录节点
+<ul>
+<li>客户端和ZK断开连接后节点依然存在</li>
+</ul>
+</li>
+<li>PERSISTENT_SEQUENTIAL&ndash;持久化顺序编号目录节点
+<ul>
+<li>与持久化目录节点相同，只是多了ZK对节点的顺序编号</li>
+</ul>
+</li>
+<li>EPHEMERAL&ndash;临时目录节点
+<ul>
+<li>客户端和ZK断开连接后节点被删除</li>
+</ul>
+</li>
+<li>EPHEMERAL_SEQUENTIAL&ndash;临时顺序编号目录节点
+<ul>
+<li>与临时目录节点相同，只是多了ZK对节点的顺序编号</li>
+</ul>
+</li>
+</ul>
+<h4 id="通知机制">通知机制</h4>
+<p>ZK还提供了类似于观察这模式的通知机制，称为watcher事件，可以观察到znode的变化，来通知客户端，之后客户端再做相应的业务逻辑</p>
+<h3 id="使用场景">使用场景</h3>
+<h4 id="命名服务">命名服务</h4>
+<p>这里命名服务指的是通过指定名字获取对应的资源，将资源存储在特定路径的znode中，根据路径就可以找到资源，类比目录结构来说，拿到文件的地址就能通过地址来找到文件，有点像是URL的意思，但是由于ZK数据结构设计的因素ZK不能存放较大的数据；微服务框架中的注册中心需要存放provider和consumer的信息，并且consumer要能够感知provider的实时状态，ZK可以根据provider和consumer的地址映射成临时znode结构，这样既保存了provider和consumer的信息还能感知彼此的状态</p>
+<h4 id="配置管理">配置管理</h4>
+<p>一句话解释&mdash;-动态下发配置文件变化；通过ZK客户端watch配置文件，一旦配置文件发生变化马上通知客户端做对应的处理</p>
+<h4 id="分布式锁">分布式锁</h4>
+<p>多个客户端再ZK的同一个目录下尝试创建临时znode，成功创建znode意味着获得锁成功，下个客户端发现目录下已经存在znode则对该znode添加watch机制，当znode消失即为释放锁后，通知客户端尝试创建znode来获取锁，这是公平锁；非公平锁的则创建临时有序的znode，相当于一个队列，后面的节点watch前一个节点的znode的状态，队头的znode为获得锁成功的几点</p>
+<h3 id="选举算法">选举算法</h3>
+<h4 id="zk节点的状态">ZK节点的状态</h4>
+<ul>
+<li>LOOKING&ndash;当前节点不知道leader是谁，正在搜索</li>
+<li>LEADING&ndash;当前节点为集群的leader</li>
+<li>FOLLOWING&ndash;目前已有leader，当前节点负责与leader节点同步</li>
+</ul>
+<h4 id="选举过程">选举过程</h4>
+<p>在两种情况下会进行选举，1.服务器初始化启动 2.集群中leader节点故障</p>
+<p>起初集群中的节点没有leader或者不知道leader是谁，此时节点的状态为LOOKING，如果当前集群存在leader（该节点新加入集群），此节点发送投票信息想要选举leader会被告知当前leader的信息，此节点只需和leader节点建立连接，并进行状态同步即可；</p>
+<p>如果当前集群不存在leader节点，则需要投票进行选举</p>
+<ul>
+<li>此时所有节点皆为LOOKING状态，并编辑投票信息发送给集群的其他节点，投票信息的格式为（SID,ZXID）（服务器的唯一标识，事务ID），SID是自己配置的，ZXID理解为当前节点数据的版本；</li>
+<li>集群中的节点会受到其他节点的投票信息，加上自己的那一票会根据一个规则会投出第二轮的选票
+<ul>
+<li>节点会在自己收到的选票中，选择ZXID最大的作为第二轮的选票发送给集群中其他节点</li>
+<li>如果ZXID相同则选择SID最大的作为第二轮的选票发送给集群中其他节点</li>
+</ul>
+</li>
+<li>集群中的节点在接收到第二轮选票后进行统计（包含自己的一票），获得集群中一半以上（&gt;n/2）数量投票的节点当选leader进入LEADING状态，其余节点进入FOLLOWING状态</li>
+</ul>
+<p>总结一下，集群中要获得一半以上的投票才能当选leader，所以集群最少为3台，并且数量是奇数；集群中ZXID越大的节点（当前节点数据版本越新）优先当选leader</p>
+<h3 id="安装与启动">安装与启动</h3>
+<p>整个过程没有难度也很好理解，跟着<a href="https://www.jianshu.com/p/5491d16e6abd" target="_blank" rel="noopener noreffer">这篇文章</a>做就完事了</p>
+<h3 id="最后">最后</h3>
+<p>本文是对于Zookeeper的扫盲，大致了解ZK的基本原理，为了更好的理解工作中的项目，具有目的性，一些细节没有去研究，下回再补，😋</p>
+<h3 id="参考资料">参考资料</h3>
+<p><a href="http://jm.taobao.org/2011/10/08/1232/" target="_blank" rel="noopener noreffer">ZooKeeper典型应用场景一览</a></p>
+<p><a href="https://www.jianshu.com/p/5491d16e6abd" target="_blank" rel="noopener noreffer">笔记：Mac上zookeeper的安装与启动</a></p>
+<p><a href="https://segmentfault.com/a/1190000014479433?utm_source=tag-newest" target="_blank" rel="noopener noreffer">zookeeper面试题</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2019-08-29</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2019/08/zookeeper%E6%89%AB%E7%9B%B2/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" data-title="Zookeeper扫盲" data-hashtags="分布式"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" data-hashtag="分布式"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" data-title="Zookeeper扫盲"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" data-title="Zookeeper扫盲"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" data-title="Zookeeper扫盲" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2019/08/zookeeper%E6%89%AB%E7%9B%B2/" data-title="Zookeeper扫盲"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2019/08/cap%E5%92%8Cbase/" class="prev" rel="prev" title="CAP和BASE"><i class="fas fa-angle-left fa-fw"></i>CAP和BASE</a>
+            <a href="/2019/09/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/" class="next" rel="next" title="观察者模式">观察者模式<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

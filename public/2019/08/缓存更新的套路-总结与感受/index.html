@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>缓存更新的套路 总结与感受 - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="缓存更新的套路 总结与感受" />
+<meta property="og:description" content="注： 本文是阅读 [缓存更新的套路] (https://coolshell.cn/articles/17416.html) 一文的总结，本文是以经常用到的Redis&#43;MySQL的角度解读 经典方法 &ndash; Cache Aside Pattern 读操作：先从Redis中获取" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-08-21T14:51:35&#43;08:00" />
+<meta property="article:modified_time" content="2019-08-21T14:51:35&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="缓存更新的套路 总结与感受"/>
+<meta name="twitter:description" content="注： 本文是阅读 [缓存更新的套路] (https://coolshell.cn/articles/17416.html) 一文的总结，本文是以经常用到的Redis&#43;MySQL的角度解读 经典方法 &ndash; Cache Aside Pattern 读操作：先从Redis中获取"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" /><link rel="prev" href="https://example.com/2019/08/%E4%B8%80%E6%AC%A1spring%E4%BA%8B%E5%8A%A1%E4%B8%8D%E5%9B%9E%E6%BB%9A%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" /><link rel="next" href="https://example.com/2019/08/cap%E5%92%8Cbase/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "缓存更新的套路 总结与感受",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2019\/08\/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "Redis","wordcount":  2915 ,
+        "url": "https:\/\/example.com\/2019\/08\/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97\/","datePublished": "2019-08-21T14:51:35+08:00","dateModified": "2019-08-21T14:51:35+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">缓存更新的套路 总结与感受</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E5%90%8E%E7%AB%AF/"><i class="far fa-folder fa-fw"></i>后端</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2019-08-21">2019-08-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2915 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#经典方法----cache-aside-pattern">经典方法 &ndash; Cache Aside Pattern</a></li>
+        <li><a href="#readwrite-through-pattern">Read/Write Through Pattern</a></li>
+        <li><a href="#write-behind-caching-pattern">Write Behind Caching Pattern</a></li>
+        <li><a href="#精彩评论">精彩评论</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><strong>注：</strong> 本文是阅读 [缓存更新的套路] (<a href="https://coolshell.cn/articles/17416.html">https://coolshell.cn/articles/17416.html</a>) 一文的总结，本文是以经常用到的Redis+MySQL的角度解读</p>
+<h3 id="经典方法----cache-aside-pattern">经典方法 &ndash; Cache Aside Pattern</h3>
+<ul>
+<li>读操作：先从Redis中获取，没有命中则从MySQL中获取，最后更新到Redis中</li>
+<li>写操作：先写MySQL，成功后删除Redis中的数据</li>
+</ul>
+<p>为什么这样的方案会是经典方法呢？因为简单，有效，错误少</p>
+<ul>
+<li>场景1&ndash;写操作如果先删除Redis中的数据再操作数据库
+<ul>
+<li>如果一个写操作和读操作并发执行，写操作删除了Redis中的数据还没来得及将数据更新到MySQL中，读操作没有在Redis中读取到数据，而从MySQL中读到旧的数据并更新到了Redis中，这样虽然MySQL中的数据是正确的，因为Redis的存在使得每次读取的数据都是脏数据。（这种情况只会发生在删除Redis数据后，写MySQL前这段时间，因为写MySQL时可以通过加悲观锁来避免问题）</li>
+</ul>
+</li>
+<li>场景2&ndash;写操作后增加更新Redis数据
+<ul>
+<li>这样读和写的操作都会更新Redis数据看似更稳健了，其实不然，更新操作变多了脏数据也会变多，比如有两个写操作a和b，按照请求的时间来说最终的状态应该是b，极端情况下ab都完成了更新数据库的操作，在更新Redis的时候，b先完成了，随后a完成又将Redis数据改成了a的状态，这样还是会存在脏数据 ，虽然出现的概率不大相对于经典方法多了产生脏数据的可能性，所以不可取</li>
+</ul>
+</li>
+<li>场景3&ndash;脏数据
+<ul>
+<li>经典方法可以避免场景1和2的问题，但也不是万无一失的，当一个读操作在Redis中没有命中时，从MySQL中获取了数据，在更新Redis数据之前，有一个写操作完成，此时MySQL的数据已经变了，而读操作会把之前的数据写入Redis中，产生脏数据。而这样的场景发生的几率非常非常小，由于MySQL锁的限制，只能发生在读操作读取数据之后读操作更新Redis数据之前，并且这段时间有一个写操作完成，同样因为锁的存在写操作一般都比读操作会耗时，并且给Redis数据增加过期时间进一步减小脏数据的产生几率</li>
+</ul>
+</li>
+</ul>
+<p>综上所述，虽然经典方法在场景3略有瑕疵，但依然经典可用，因为其简单，有效，错误少</p>
+<h3 id="readwrite-through-pattern">Read/Write Through Pattern</h3>
+<ul>
+<li>读操作：Redis命中直接返回；没有命中从MySQL中读取后更新到Redis中</li>
+<li>写操作：Redis中命中更新Redis,在同步的更新到MySQL；没有命中更新MySQL</li>
+</ul>
+<p>这种模式写操作主要依赖一个数据源（MySQL或者Redis），读数据时在Redis中没有命中会从MySQL中读取到Redis中，长时间运行后大部分数据都会在Redis中命中，写操作也会针对于Redis并由Redis同步的进行写入MySQL，相当于是强依赖于Redis，弱依赖甚至不依赖于MySQL，至于为什么未命中不直接写Redis还没想明白~</p>
+<h3 id="write-behind-caching-pattern">Write Behind Caching Pattern</h3>
+<ul>
+<li>读操作：Redis命中直接返回；没有命中则从MySQL中获取数据返回</li>
+<li>写操作：无论Redis命中与否都先更新Redis，接着异步更新MySQL中的数据</li>
+</ul>
+<p>原文中也提到，这么做会极大的提高I/O，相当于只操作了Redis，是内存级别的读写，同时这么做也有缺点，就是在同步数据到MySQL时如果服务器宕机断电等事故将会永久性的数据丢失</p>
+<h3 id="精彩评论">精彩评论</h3>
+<p>摘取了一些大佬们的评论，很有启发</p>
+<ul>
+<li>
+<p>一位名叫 ty 的大佬说：”Cache Aside Pattern模式，两个更新操作同时进来，也可能会有cache脏数据的问题啊
+顺序如下：
+第一个写数据库，第二个写数据库，第二个写cache，第一个写cache
+这样cache里是第一个数据，而数据库里是第二个“</p>
+</li>
+<li>
+<p>&mdash;&mdash;&ndash;这和我想的是一样的，哈哈</p>
+</li>
+<li>
+<p>一位名叫 letsgowei 的大佬说：”在做更新操作时不可以更改数据库后直接更新缓存吗？这样最多也就一两次脏数据“</p>
+</li>
+<li>
+<p>&mdash;&mdash;&ndash;这位大佬的疑惑应该是为什么更新操作只是删除缓存或者把缓存设置为无效，而不是更新缓存呢？还有一位评论有同样的疑惑；这个问题我没有考虑到，觉得他们说的有道理直接更新也可以啊？</p>
+</li>
+<li>
+<p>一位名叫 longsen 的大佬做出了解答：”1. 读线程查key未在cache中；2.读线程从db读数据；3.写线程更改数据库；4.写线程看key未在cache中，无法更新cache；5.读线程将旧数据写入cache中。这种场景旧数据可能在cache存在很长时间“</p>
+</li>
+<li>
+<p>&mdash;&mdash;&ndash;大佬给出的解释是cache中没有key无法更新，I don&rsquo;t think so！至少在Redis的环境下是不存在的，key不存在直接set，key存在直接覆盖，Redis是有这样的命令的，所以这个回答我不同意，如果将写MySQL后将Redis中的key删除的操作，改成更新Redis的Key操作，这样一来就和我上面提到的场景2是一样的的了，读写都更新Redis增加了产生脏数据的概率，所以是不可取的</p>
+</li>
+<li>
+<p>一位名叫 泪滴 的大佬说：”大神！你的这个更新顺序是建立在更新数据库，更新缓存都不会发生失败的情况下的，单独考虑并发问题得到的顺序！
+方案1：先更新数据库，再删除缓存，当出现并发问题概率很小(假设概率为R1)，会造成脏数据。当出现网络等问题导致删除缓存失败(假设概率为R2)，会导致之后的请求一直是脏数据。
+方案2：先删除缓存，再更新数据库，当出现并发问题概率较大(假设概率为R3)，会导致之后的请求一直是脏数据，当出现网络问题，删除缓存成功，更新数据库失败，只会引发一次cache miss，在业务上基本没啥影响。当然为了弥补，我们一般都会设置缓存的过期时间，来缩短出现脏数据的时间。现在问题的关键就是R1+R2和R3的大小问题了，如果大厂，网络基础设施啥的比较牛，当然R1+R2&lt;R3选择方案1比较合适，对于广大小厂来说还真的可能R1+R2&gt;R3那怎么选择，就比较清楚了。“</p>
+</li>
+<li>
+<p>&mdash;&mdash;&ndash;说实话，他的评论让我眼前一亮，他的分析具体到了应用场景上，而且确实有这样的情况出现，所以说没有最完美的设计只有最合适的设计，给这位大佬点赞</p>
+</li>
+<li>
+<p>还有一些则是针对于原文中Write Behind Caching Pattern部分的流程图的疑问，例如缓存未命中为什么回写数据再更新数据，直接更新数据不就好了吗？写数据未命中为什么还有判断dirty的标志？等等，这些问题我也不懂，云里雾里的，不知道为什么这么设计，不就是异步更新MySQL吗，搞这么复杂是为什么，后来我冷静的分析一下，这篇文章是缓存更新的套路，当前部分是缓存异步更新MySQL的介绍，而流程图和异步半毛钱关系都没有，为什么？</p>
+</li>
+<li>
+<p>&mdash;&mdash;&ndash;因为我太垃圾了，文章中 xxPattern 指的是Linux内核中的缓存更新模式，作者是将这些模式应用到分布式环境下缓存更新中，所以说这部分的流程图是指Linux内核的缓存更新而不是分布式环境下的缓存更新，作者在文章中不止一次提到了基础很重要就体现出来了，而且作者也提到宏观的系统架构设计其实和计算机系统结构中微观的设计是相似的，所以想要设计好一个大型的分布式系统必须对计算机系统结构非常了解</p>
+</li>
+</ul>
+<p>综上所述&ndash;基础很重要</p>
+<p>以上是我拜读耗子哥的<a href="https://coolshell.cn/articles/17416.html" target="_blank" rel="noopener noreffer">《缓存更新的套路》</a>一文后的一些总结和思考，推荐大家读原文哦！</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2019-08-21</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" data-title="缓存更新的套路 总结与感受" data-hashtags="Redis"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" data-hashtag="Redis"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" data-title="缓存更新的套路 总结与感受"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" data-title="缓存更新的套路 总结与感受"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" data-title="缓存更新的套路 总结与感受" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2019/08/%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%9A%84%E5%A5%97%E8%B7%AF-%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E5%8F%97/" data-title="缓存更新的套路 总结与感受"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/redis/">Redis</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2019/08/%E4%B8%80%E6%AC%A1spring%E4%BA%8B%E5%8A%A1%E4%B8%8D%E5%9B%9E%E6%BB%9A%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="prev" rel="prev" title="一次Spring事务不回滚的踩坑记录"><i class="fas fa-angle-left fa-fw"></i>一次Spring事务不回滚的踩坑记录</a>
+            <a href="/2019/08/cap%E5%92%8Cbase/" class="next" rel="next" title="CAP和BASE">CAP和BASE<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

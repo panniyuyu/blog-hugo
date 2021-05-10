@@ -1,0 +1,78 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>所有文章 - LoveIt</title>
+        <link>https://example.com/posts/</link>
+        <description>所有文章 | LoveIt</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>sbsbjs@qq.com (yywang)</managingEditor>
+            <webMaster>sbsbjs@qq.com (yywang)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 08 Feb 2021 17:57:12 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>2020 又是起起落落落落的一年</title>
+    <link>https://example.com/2021/02/2020-%E5%8F%88%E6%98%AF%E8%B5%B7%E8%B5%B7%E8%90%BD%E8%90%BD%E8%90%BD%E8%90%BD%E7%9A%84%E4%B8%80%E5%B9%B4/</link>
+    <pubDate>Mon, 08 Feb 2021 17:57:12 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2021/02/2020-%E5%8F%88%E6%98%AF%E8%B5%B7%E8%B5%B7%E8%90%BD%E8%90%BD%E8%90%BD%E8%90%BD%E7%9A%84%E4%B8%80%E5%B9%B4/</guid>
+    <description><![CDATA[2021年已经过去了39天，上一年的总结赶紧补上，先盘点下之前立过的Flag，然后写一下自己的心路历程吧 Flag 还记得19年写总结的时候立下了的F]]></description>
+</item><item>
+    <title>一次MySQL死锁的踩坑记录</title>
+    <link>https://example.com/2020/11/%E4%B8%80%E6%AC%A1mysql%E6%AD%BB%E9%94%81%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+    <pubDate>Tue, 17 Nov 2020 14:23:43 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/11/%E4%B8%80%E6%AC%A1mysql%E6%AD%BB%E9%94%81%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+    <description><![CDATA[我又写bug了，O(∩_∩)O哈哈~，这次是MySQL数据库的死锁，真实太菜了🤷‍♀️(日常一菜) 背景 我在实现一个接口，使用动态配置中心的A]]></description>
+</item><item>
+    <title>捋一捋MySQL的锁</title>
+    <link>https://example.com/2020/11/%E6%8D%8B%E4%B8%80%E6%8D%8Bmysql%E7%9A%84%E9%94%81/</link>
+    <pubDate>Mon, 16 Nov 2020 15:04:15 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/11/%E6%8D%8B%E4%B8%80%E6%8D%8Bmysql%E7%9A%84%E9%94%81/</guid>
+    <description><![CDATA[引言 本文主要梳理MySQL的锁机制，主要是针对于Innodb引擎，目前网络上查的文章基本上都差不多，实际上是忽略了一些细节的，这些细节可能会]]></description>
+</item><item>
+    <title>Java NIO</title>
+    <link>https://example.com/2020/10/javanio/</link>
+    <pubDate>Fri, 23 Oct 2020 17:19:32 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/10/javanio/</guid>
+    <description><![CDATA[开门见山，最近打算看一下netty，做这么长时间微服务netty还没看过是不是太飘了，这篇是netty的背景知识 NIO Non-blocking I/O 非阻塞I/O；与传统阻]]></description>
+</item><item>
+    <title>分布式锁的套路-watchdog实现</title>
+    <link>https://example.com/2020/10/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%A5%97%E8%B7%AF-watchdog%E5%AE%9E%E7%8E%B0/</link>
+    <pubDate>Mon, 19 Oct 2020 21:38:46 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/10/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%A5%97%E8%B7%AF-watchdog%E5%AE%9E%E7%8E%B0/</guid>
+    <description><![CDATA[开门见山，分布式锁用来保证分布式环境下业务逻辑的原子性以及互斥，原理就是锁的原理，多个系统一同去竞争同一个资源（类比单机环境下多个线程竞争同]]></description>
+</item><item>
+    <title>Spring中bean的生命周期总结</title>
+    <link>https://example.com/2020/10/spring%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%80%BB%E7%BB%93/</link>
+    <pubDate>Fri, 09 Oct 2020 20:00:44 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/10/spring%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%80%BB%E7%BB%93/</guid>
+    <description><![CDATA[最近非常的忙碌，博客也一直没有更新，可惜自己一直没有时间去看新的东西还想更新博客，心有余而力不足，那就把旧的知识温习一下，来“敷衍”一下；废]]></description>
+</item><item>
+    <title>我又来入门k8s了</title>
+    <link>https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/</link>
+    <pubDate>Tue, 30 Jun 2020 22:49:30 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/</guid>
+    <description><![CDATA[引言 之前分析过Docker容器技术，在容器技术很快的被广大使用之后，对于业务复杂的公司来说往往需要非常多的容器，而每次都需要docker ru]]></description>
+</item><item>
+    <title>一年菜鸡带你看微服务</title>
+    <link>https://example.com/2020/06/%E4%B8%80%E5%B9%B4%E8%8F%9C%E9%B8%A1%E5%B8%A6%E4%BD%A0%E7%9C%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+    <pubDate>Thu, 25 Jun 2020 16:36:16 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/06/%E4%B8%80%E5%B9%B4%E8%8F%9C%E9%B8%A1%E5%B8%A6%E4%BD%A0%E7%9C%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+    <description><![CDATA[工作快一年了，我从一个刚入职时候的小白变成了现在有一年经验的小白,在我这一年的工作中修炼自己，现在可以说是把自己的一条腿抬过了微服务的门槛，]]></description>
+</item><item>
+    <title>蓦然回首servlet</title>
+    <link>https://example.com/2020/06/%E8%93%A6%E7%84%B6%E5%9B%9E%E9%A6%96servlet/</link>
+    <pubDate>Thu, 11 Jun 2020 17:16:07 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/06/%E8%93%A6%E7%84%B6%E5%9B%9E%E9%A6%96servlet/</guid>
+    <description><![CDATA[听到Servlet我既熟悉又陌生，我第一次接触还是在2013年，当时对于课程设计水平的我来说仅仅有个感性的认识，后来接触了ssh之后好像已经]]></description>
+</item><item>
+    <title>震惊!系统崩了竟然因为这个</title>
+    <link>https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/</link>
+    <pubDate>Thu, 28 May 2020 17:16:07 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/</guid>
+    <description><![CDATA[菜鸟遇到线上问题，从第一次发现问题到问题解决用时2个月，也算是个记录吧，哈哈，本文记录下我解决问题的心路历程，也不是什么高级的问题，大神请绕]]></description>
+</item></channel>
+</rss>

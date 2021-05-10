@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Optional 使用及源码 - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="Optional 使用及源码" />
+<meta property="og:description" content="Optional 使用及源码分析 A container object which may or may not contain a non-null value. 可能包含空值的容器对象。 怎么理解呢？就把它当成是和Collection一样的容器，Collectio" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2019/08/optional/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-08-15T20:58:37&#43;08:00" />
+<meta property="article:modified_time" content="2019-08-15T20:58:37&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="Optional 使用及源码"/>
+<meta name="twitter:description" content="Optional 使用及源码分析 A container object which may or may not contain a non-null value. 可能包含空值的容器对象。 怎么理解呢？就把它当成是和Collection一样的容器，Collectio"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2019/08/optional/" /><link rel="prev" href="https://example.com/2019/08/mac-%E8%AE%BE%E7%BD%AE/" /><link rel="next" href="https://example.com/2019/08/%E4%B8%80%E6%AC%A1spring%E4%BA%8B%E5%8A%A1%E4%B8%8D%E5%9B%9E%E6%BB%9A%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Optional 使用及源码",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2019\/08\/optional\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "Java","wordcount":  2191 ,
+        "url": "https:\/\/example.com\/2019\/08\/optional\/","datePublished": "2019-08-15T20:58:37+08:00","dateModified": "2019-08-15T20:58:37+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2019/08/optional/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2019/08/optional/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Optional 使用及源码</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/java/"><i class="far fa-folder fa-fw"></i>Java</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2019-08-15">2019-08-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2191 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#optional-使用及源码分析">Optional 使用及源码分析</a>
+          <ul>
+            <li><a href="#成员变量">成员变量</a></li>
+            <li><a href="#构造方法">构造方法</a></li>
+            <li><a href="#主要方法">主要方法</a></li>
+            <li><a href="#总结">总结</a></li>
+            <li><a href="#栗子">栗子</a>
+              <ul>
+                <li><a href="#栗子1">栗子1</a></li>
+                <li><a href="#栗子2">栗子2</a></li>
+                <li><a href="#栗子3">栗子3</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="optional-使用及源码分析">Optional 使用及源码分析</h3>
+<p>A container object which may or may not contain a non-null value.</p>
+<p>可能包含空值的容器对象。</p>
+<p>怎么理解呢？就把它当成是和Collection一样的容器，Collection是通过不同的数据结构和API来操作容器中的元素；Optional则是提供API来判断容器中的元素是否为空，在此基础上还能根据是否为空的不同结果给出自定义的处理逻辑。这么说还是很抽象，直接上源码就会好理解一些。</p>
+<h4 id="成员变量">成员变量</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 空的Optional对象
+private static final Optional&lt;?&gt; EMPTY = new Optional&lt;&gt;();
+// 容器中元素的值
+private final T value;
+</code></pre></td></tr></table>
+</div>
+</div><p>这个value是容器中元素的值，怎么理解呢，使用Optional是要通过它的API进行判空来达到避免NPE的现象，上面说到将Optional当成是一个容器，这个容器中的元素则是需要判空的对象，也就是说容器中的元素就是你传入的参数，这个value就是传参的值</p>
+<h4 id="构造方法">构造方法</h4>
+<p>无参构造，只是将value置为null</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">private Optional() {
+        this.value = null;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>有参构造</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">private Optional(T value) {
+    this.value = Objects.requireNonNull(value);
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>其中返回Objects中的requireNonNull的方法，再看这个方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T&gt; T requireNonNull(T obj) {
+    if (obj == null)
+        throw new NullPointerException();
+    return obj;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>很简单如果obj为空抛出异常，不为空返回本身，所以有参构造的效果就是确认value不为空并给value赋值，如果是空就抛异常</p>
+<p>而且这两个构造函数是私有的，也就是说我们不能new出来</p>
+<h4 id="主要方法">主要方法</h4>
+<ul>
+<li>empty()&ndash;返回空的Optional对象</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T&gt; Optional&lt;T&gt; empty() {
+    Optional var0 = EMPTY;
+    return var0;
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>of(T var1)&ndash;调用了有参构造，即有值返回带有该值得Optional对象，为空则会抛异常</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T&gt; Optional&lt;T&gt; of(T var0) {
+    return new Optional(var0);
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>ofNullable(T var0)&ndash;元素为null返回空的Option对象，不是null返回本身</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T&gt; Optional&lt;T&gt; ofNullable(T var0) {
+    return var0 == null ? empty() : of(var0);
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>get()&ndash;从名字就可以看出是获取元素的值，也就是返回value，如果是null的话会抛异常</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public T get() {
+    if (this.value == null) {
+        throw new NoSuchElementException(&#34;No value present&#34;);
+    } else {
+        return this.value;
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>isPresent()&ndash;返回value是否为null</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public boolean isPresent() {
+    return this.value != null;
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>ifPresent(Consumer&lt;? super T&gt; var)&ndash;如果元素不是空的话执行var1中的逻辑，Consumer之前有文章写过，是接收一个参数执行一个没有返回值得逻辑</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public void ifPresent(Consumer&lt;? super T&gt; var1) {
+	if (this.value != null) {
+	    var1.accept(this.value);
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>filter(Predicate&lt;? super T&gt; var1)&ndash;首先确保predicate对象和value不是null，然后用predicate对象对value进行筛选，满足条件返回本身，不满足条件返回空的对象（看源码是这个意思，具体怎什么情况用还想不到~）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public Optional&lt;T&gt; filter(Predicate&lt;? super T&gt; var1) {
+    Objects.requireNonNull(var1);
+    if (!this.isPresent()) {
+        return this;
+    } else {
+        return var1.test(this.value) ? this : empty();
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>map(Function&lt;? super T, ? extends U&gt; var1)&ndash;同样确保var1不是null，之后value为空值返回空的Optional对象，value有值执行var1中的逻辑</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public &lt;U&gt; Optional&lt;U&gt; map(Function&lt;? super T, ? extends U&gt; var1) {
+    Objects.requireNonNull(var1);
+    return !this.isPresent() ? empty() : ofNullable(var1.apply(this.value));
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>flatMap(Function&lt;? super T, Optional&lt; U &raquo; var1)&ndash;与map方法相同,不同的是入参，根据不同的参数结构使用不同的方法</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public &lt;U&gt; Optional&lt;U&gt; flatMap(Function&lt;? super T, Optional&lt;U&gt;&gt; var1) {
+    Objects.requireNonNull(var1);
+    return !this.isPresent() ? empty() : (Optional)Objects.requireNonNull(var1.apply(this.value));
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>T orElse(T var1)&ndash;获取value的值，不为空返回本身，为空返回入参var1</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public T orElse(T var1) {
+    return this.value != null ? this.value : var1;
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>T orElseGet(Supplier&lt;? extends T&gt; var1)&ndash;与orElse的逻辑一样，不同的是value为空返回的是supplier对象的逻辑</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public T orElseGet(Supplier&lt;? extends T&gt; var1) {
+    return this.value != null ? this.value : var1.get();
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>T orElseThrow(Supplier&lt;? extends X&gt; var1)&ndash;同样的逻辑，不同的是value为null会抛异常</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public &lt;X extends Throwable&gt; T orElseThrow(Supplier&lt;? extends X&gt; var1) throws X {
+    if (this.value != null) {
+        return this.value;
+    } else {
+        throw (Throwable)var1.get();
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="总结">总结</h4>
+<ul>
+<li>of和ofNullable
+<ul>
+<li>都是取值，如果元素是null的话of会报空指针&ndash;不用，ofNullable将null转为空的对象没有空指针；</li>
+<li>get方法同样是取值，value是null也会抛异常&ndash;不用</li>
+<li>最后，取值用ofNullable就完事了</li>
+</ul>
+</li>
+<li>isPresent和ifPresent
+<ul>
+<li>isPresent返回元素是否为null，有返回值</li>
+<li>ifPresent元素不为空执行一段逻辑，无返回值</li>
+<li>最后，只判断用isPresent有逻辑用ifPresent</li>
+</ul>
+</li>
+<li>filter、map和flatMap
+<ul>
+<li>都是将不是null的元素执行传入的逻辑，根据不同的需求选择方法</li>
+</ul>
+</li>
+<li>orElse、orElseGet和orElseThrow
+<ul>
+<li>都是将null的元素做转换，orElse返回传入的值，orElseGet返回传入的逻辑，这两个方法看需求没有逻辑有orElse有逻辑用orElseGet；orElseThrow元素为null抛异常&ndash;不用</li>
+</ul>
+</li>
+</ul>
+<h4 id="栗子">栗子</h4>
+<p>刚刚学习还不知道怎么使用，看到[一篇文章]（https://www.cnblogs.com/rjzheng/p/9163246.html） 给的栗子不错，很有借鉴意义，但是我对这篇文章中的orElse和orElseGet的栗子有不同意见。</p>
+<h5 id="栗子1">栗子1</h5>
+<ul>
+<li>使用前</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public String getCity(User user)  throws Exception{
+    if(user!=null){
+        if(user.getAddress()!=null){
+            Address address = user.getAddress();
+            if(address.getCity()!=null){
+                return address.getCity();
+            }
+        }
+    }
+    throw new Excpetion(&#34;取值错误&#34;); 
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用后</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public String getCity(User user) throws Exception{
+    return Optional.ofNullable(user)
+                   .map(u-&gt; u.getAddress())
+                   .map(a-&gt;a.getCity())
+                   .orElseThrow(()-&gt;new Exception(&#34;取指错误&#34;));
+}
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="栗子2">栗子2</h5>
+<ul>
+<li>使用前</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">if(user!=null){
+    dosomething(user);
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用后</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> Optional.ofNullable(user)
+         .ifPresent(u-&gt;{
+            dosomething(u);
+         });
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="栗子3">栗子3</h5>
+<ul>
+<li>使用前</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public User getUser(User user) throws Exception{
+	if(user!=null){
+	    String name = user.getName();
+	    if(&#34;zhangsan&#34;.equals(name)){
+	        return user;
+	    }
+	}else{
+	    user = new User();
+	    user.setName(&#34;zhangsan&#34;);
+	    return user;
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用后</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public User getUser(User user) {
+    return Optional.ofNullable(user)
+                   .filter(u-&gt;&#34;zhangsan&#34;.equals(u.getName()))
+                   .orElseGet(()-&gt; {
+                        User user1 = new User();
+                        user1.setName(&#34;zhangsan&#34;);
+                        return user1;
+                   });
+}
+</code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2019-08-15</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2019/08/optional/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2019/08/optional/" data-title="Optional 使用及源码" data-hashtags="Java"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2019/08/optional/" data-hashtag="Java"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2019/08/optional/" data-title="Optional 使用及源码"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2019/08/optional/" data-title="Optional 使用及源码"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2019/08/optional/" data-title="Optional 使用及源码" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2019/08/optional/" data-title="Optional 使用及源码"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2019/08/mac-%E8%AE%BE%E7%BD%AE/" class="prev" rel="prev" title="mac 设置"><i class="fas fa-angle-left fa-fw"></i>mac 设置</a>
+            <a href="/2019/08/%E4%B8%80%E6%AC%A1spring%E4%BA%8B%E5%8A%A1%E4%B8%8D%E5%9B%9E%E6%BB%9A%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="next" rel="next" title="一次Spring事务不回滚的踩坑记录">一次Spring事务不回滚的踩坑记录<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

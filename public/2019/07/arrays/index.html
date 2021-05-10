@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Arrays - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="Arrays" />
+<meta property="og:description" content="Arrays copyOf 1 2 3 4 5 6 7 8 9 public static &lt;T,U&gt; T[] copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType) { @SuppressWarnings(&#34;unchecked&#34;) T[] copy = ((Object)newType == (Object)Object[].class) ? (T[]) new Object[newLength] : (T[]) Array.newInstance(newType.getComponentType(), newLength); System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength)); return copy; } 先看要被拷贝到的数组长度是不是够用，够用的话" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2019/07/arrays/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-07-26T19:31:27&#43;08:00" />
+<meta property="article:modified_time" content="2019-07-26T19:31:27&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="Arrays"/>
+<meta name="twitter:description" content="Arrays copyOf 1 2 3 4 5 6 7 8 9 public static &lt;T,U&gt; T[] copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType) { @SuppressWarnings(&#34;unchecked&#34;) T[] copy = ((Object)newType == (Object)Object[].class) ? (T[]) new Object[newLength] : (T[]) Array.newInstance(newType.getComponentType(), newLength); System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength)); return copy; } 先看要被拷贝到的数组长度是不是够用，够用的话"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2019/07/arrays/" /><link rel="prev" href="https://example.com/2019/07/arraylist/" /><link rel="next" href="https://example.com/2019/07/stringutils/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Arrays",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2019\/07\/arrays\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "Java","wordcount":  1393 ,
+        "url": "https:\/\/example.com\/2019\/07\/arrays\/","datePublished": "2019-07-26T19:31:27+08:00","dateModified": "2019-07-26T19:31:27+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2019/07/arrays/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2019/07/arrays/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Arrays</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/java/"><i class="far fa-folder fa-fw"></i>Java</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2019-07-26">2019-07-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1393 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#arrays">Arrays</a>
+          <ul>
+            <li><a href="#copyof">copyOf</a>
+              <ul>
+                <li><a href="#systemarraycopy">System.arraycopy</a></li>
+              </ul>
+            </li>
+            <li><a href="#aslist">asList</a></li>
+            <li><a href="#copyofrange">copyOfRange</a></li>
+            <li><a href="#sort">sort</a>
+              <ul>
+                <li><a href="#timsort">TimSort</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="arrays">Arrays</h3>
+<h4 id="copyof">copyOf</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T,U&gt; T[] copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType) {
+    @SuppressWarnings(&#34;unchecked&#34;)
+    T[] copy = ((Object)newType == (Object)Object[].class)
+        ? (T[]) new Object[newLength]
+        : (T[]) Array.newInstance(newType.getComponentType(), newLength);
+    System.arraycopy(original, 0, copy, 0,
+                     Math.min(original.length, newLength));
+    return copy;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>先看要被拷贝到的数组长度是不是够用，够用的话直接调用System.arraycopy方法；不够用创建一个新的与源数组同样长度的数组进行拷贝
+<strong>如果数组中是引用类型，Arrays.copy拷贝的是引用，不会新创建对象，如果要对拷贝的数组做修改操作源数组同样会受到影响，而字符串数组由于字符串常量池的存在，当修改字符串的时候会新创建一个字符串并将新的引用付给数组，所以源数组对应的字符串并不会发生变化</strong></p>
+<h5 id="systemarraycopy">System.arraycopy</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static native void arraycopy(Object src,  int  srcPos,
+                                    Object dest, int destPos,
+                                    int length);
+</code></pre></td></tr></table>
+</div>
+</div><p>这是一个本地方法，就看一下参数吧</p>
+<ul>
+<li>src&mdash;-the source array.</li>
+<li>srcPos&mdash;-starting position in the source array.</li>
+<li>dest&mdash;-the destination array.</li>
+<li>destPos&mdash;-starting position in the destination data.</li>
+<li>length&mdash;-the number of array elements to be copied.</li>
+</ul>
+<h4 id="aslist">asList</h4>
+<p>将字符串转成ArrayList集合</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T&gt; List&lt;T&gt; asList(T... a) {
+    return new ArrayList&lt;&gt;(a);
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这里的ArrayList是Arrays中的一个内部类，继承了AbstractList方法，内部值实现了部分方法，简单点说这个集合是只读的，不能进行修改和删除操作，因为没有重写相关的方法。</p>
+<h4 id="copyofrange">copyOfRange</h4>
+<p>按照范围拷贝数组 [from,to) 左开右闭</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static &lt;T&gt; T[] copyOfRange(T[] original, int from, int to) {
+    return copyOfRange(original, from, to, (Class&lt;? extends T[]&gt;) original.getClass());
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="sort">sort</h4>
+<p>集合工具类 Collections.sort 其实就是调用 Arrays.sort 方法对集合进行排序的，该方法先调用 toArray 方法将集合转成object数组，然后再调用 Arrays.sort 方法对数组进行排序，最后再将排序号的数组通过迭代器set到新的集合中去。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public static void sort(Object[] a) {
+    if (LegacyMergeSort.userRequested)
+        legacyMergeSort(a);
+    else
+        ComparableTimSort.sort(a, 0, a.length, null, 0, 0);
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到sort方法是通过userRequested的标志来选中排序的方式，从jdk7以后默认为false，使用TimSort的方式排序，（通过System.setProperty(&ldquo;java.util.Arrays.useLegacyMergeSort&rdquo;, &ldquo;true&rdquo;)修改）</p>
+<ul>
+<li>userRequested为true使用LegacyMergeSort的方式进行排序，当数组长度小于7时使用插入排序，当数组长度大于7时使用归并排序，归并到长度小于7的长度再次使用插入排序</li>
+<li>userRequested为false采用TimSort的方式排序</li>
+</ul>
+<h5 id="timsort">TimSort</h5>
+<ul>
+<li>1.数组长度小于32时，首先在数组中从开头开始寻找升序的子数组，没有的话找降序的子数组再反转，然后将数组中的剩余元素使用二分查找的方式插入到子数组中</li>
+<li>2.数组长度大于32时，将数组切分若干个长度在[16,32)的区块（jdk里叫run，我理解为区块）</li>
+<li>3.每个区块再使用第一步的方式进行排序排序后将每个区块进行合并，合并的过程有两点优化</li>
+<li>a.合并区块的过程中通过限制条件来完成将连续的三个区块中较小的两个优先合并降低复杂度</li>
+<li>b.两个区块合并时，先将区块1的头元素和尾元素插入到区块2中，相当于缩小了插入区块2的范围降低复杂度</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">static void sort(Object[] a, int lo, int hi, Object[] work, int workBase, int workLen) {
+    assert a != null &amp;&amp; lo &gt;= 0 &amp;&amp; lo &lt;= hi &amp;&amp; hi &lt;= a.length;
+
+    int nRemaining  = hi - lo;
+    if (nRemaining &lt; 2)
+        return;  // Arrays of size 0 and 1 are always sorted
+
+    // If array is small, do a &#34;mini-TimSort&#34; with no merges
+    if (nRemaining &lt; MIN_MERGE) {
+        int initRunLen = countRunAndMakeAscending(a, lo, hi);
+        binarySort(a, lo, hi, lo + initRunLen);
+        return;
+    }
+
+    /**
+     * March over the array once, left to right, finding natural runs,
+     * extending short natural runs to minRun elements, and merging runs
+     * to maintain stack invariant.
+     */
+    ComparableTimSort ts = new ComparableTimSort(a, work, workBase, workLen);
+    int minRun = minRunLength(nRemaining);
+    do {
+        // Identify next run
+        int runLen = countRunAndMakeAscending(a, lo, hi);
+
+        // If run is short, extend to min(minRun, nRemaining)
+        if (runLen &lt; minRun) {
+            int force = nRemaining &lt;= minRun ? nRemaining : minRun;
+            binarySort(a, lo, lo + force, lo + runLen);
+            runLen = force;
+        }
+
+        // Push run onto pending-run stack, and maybe merge
+        ts.pushRun(lo, runLen);
+        ts.mergeCollapse();
+
+        // Advance to find next run
+        lo += runLen;
+        nRemaining -= runLen;
+    } while (nRemaining != 0);
+
+    // Merge all remaining runs to complete sort
+    assert lo == hi;
+    ts.mergeForceCollapse();
+    assert ts.stackSize == 1;
+}
+</code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2019-07-26</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2019/07/arrays/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2019/07/arrays/" data-title="Arrays" data-hashtags="Java"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2019/07/arrays/" data-hashtag="Java"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2019/07/arrays/" data-title="Arrays"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2019/07/arrays/" data-title="Arrays"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2019/07/arrays/" data-title="Arrays" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2019/07/arrays/" data-title="Arrays"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2019/07/arraylist/" class="prev" rel="prev" title="ArrayList"><i class="fas fa-angle-left fa-fw"></i>ArrayList</a>
+            <a href="/2019/07/stringutils/" class="next" rel="next" title="StringUtils">StringUtils<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>震惊!系统崩了竟然因为这个 - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="震惊!系统崩了竟然因为这个" />
+<meta property="og:description" content="菜鸟遇到线上问题，从第一次发现问题到问题解决用时2个月，也算是个记录吧，哈哈，本文记录下我解决问题的心路历程，也不是什么高级的问题，大神请绕" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-28T17:16:07&#43;08:00" />
+<meta property="article:modified_time" content="2020-05-28T17:16:07&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="震惊!系统崩了竟然因为这个"/>
+<meta name="twitter:description" content="菜鸟遇到线上问题，从第一次发现问题到问题解决用时2个月，也算是个记录吧，哈哈，本文记录下我解决问题的心路历程，也不是什么高级的问题，大神请绕"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" /><link rel="prev" href="https://example.com/2020/05/aqs%E5%88%86%E6%9E%90/" /><link rel="next" href="https://example.com/2020/06/%E8%93%A6%E7%84%B6%E5%9B%9E%E9%A6%96servlet/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "震惊!系统崩了竟然因为这个",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2020\/05\/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "Java","wordcount":  2104 ,
+        "url": "https:\/\/example.com\/2020\/05\/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA\/","datePublished": "2020-05-28T17:16:07+08:00","dateModified": "2020-05-28T17:16:07+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">震惊!系统崩了竟然因为这个</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/java/"><i class="far fa-folder fa-fw"></i>Java</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-05-28">2020-05-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2104 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#第一次问题">第一次问题</a>
+          <ul>
+            <li><a href="#背景">背景</a></li>
+            <li><a href="#应对措施">应对措施</a></li>
+            <li><a href="#分析">分析</a></li>
+            <li><a href="#处理">处理</a></li>
+          </ul>
+        </li>
+        <li><a href="#第二次出现问题">第二次出现问题</a>
+          <ul>
+            <li><a href="#背景-1">背景</a></li>
+            <li><a href="#分析-1">分析</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>菜鸟遇到线上问题，从第一次发现问题到问题解决用时2个月，也算是个记录吧，哈哈，本文记录下我解决问题的心路历程，也不是什么高级的问题，大神请绕路</p>
+<h3 id="第一次问题">第一次问题</h3>
+<h4 id="背景">背景</h4>
+<p>4月27日10:40-11:40一个尾数164的容器CPU突然飙升疯狂收到报警的邮件和消息</p>
+<h4 id="应对措施">应对措施</h4>
+<ul>
+<li>查看后台日志有一个url在刷屏，条件反射的找到这个刷屏的人给他限流（因为之前有过类似的情况，用户通过程序发送url请求来获取数据，30秒之内精准限流，我也是老手了）</li>
+<li>继续观察监控，调用量下来了，CPU迟迟不降，没有办法重启了容器</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/dump%e9%97%ae%e9%a2%981.png"
+        data-srcset="/images/dump%E9%97%AE%E9%A2%981.png, /images/dump%e9%97%ae%e9%a2%981.png 1.5x, /images/dump%E9%97%AE%E9%A2%981.png 2x"
+        data-sizes="auto"
+        alt="/images/dump%E9%97%AE%E9%A2%981.png"
+        title="upload successful" /></p>
+<h4 id="分析">分析</h4>
+<ul>
+<li>CPU不降一定是还在做计算工作</li>
+<li>排查被刷的url，是一个监控报表的url（由于系统只提供最大1小时的数据，临近618很多用户需要几天甚至几周的数据做分析，不得已通过程序来跑出自己所需的数据）</li>
+<li>代码走查，是通过调用es的服务，获取数据，再封装成前端需要的数据返回，逻辑上是没问题的
+<ul>
+<li>获取数据：查的是es响应很快，2s之内就有数据</li>
+<li>前端页面一共3个图，不论查询多少时间间隔的数据都只有90个点，3个图共270个点，也就是后台封装270个对象</li>
+</ul>
+</li>
+<li>整个过程也就封装对象是计算的过程需要CPU，难不成这个人用多个线程来跑这个url，这也太变态了吧</li>
+<li>验证：7个任务，每个任务循环访问500次，查看监控CPU还不到5%，平常2%左右</li>
+</ul>
+<h4 id="处理">处理</h4>
+<ul>
+<li>可以排除是获取监控数据这个URL的问题，当天回看日志没有发现其他异常，问了前辈之前也没出现过类似问题，而且手上还有需求就先搁置了；过了一周再排查的时候发现找不到历史日志了，因为刚刚迁移了环境历史日志没有打开，死无对证了。。。</li>
+<li>也算排查了一个系统的风险点吧，最终，开启系统的历史日志，重新配置报警的阈值，等下次再出问题时摘除负载均衡，保留现场再做排查</li>
+</ul>
+<h3 id="第二次出现问题">第二次出现问题</h3>
+<h4 id="背景-1">背景</h4>
+<p>5月26日19:15前后，同样还是收到尾数164的容器CPU飙升的告警邮件，本以为上次的问题是个灵异事件，没想到又出现了，有了上次的经验，这次就很从容，将负载均衡摘除安心排查问题，可是一会又收到了同机房尾数是182的容器的报警邮件，群里的用户也开始反馈系统无法访问了，我愣住了，脑子里都是在想最近有做什么上线吗，是哪里出了问题；在我发愣的时候，前辈已经开始扩容，紧急扩容了4个容器这才稳住局势，这我才回过神来，我还是年轻😂</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/dump%e9%97%ae%e9%a2%982.png"
+        data-srcset="/images/dump%E9%97%AE%E9%A2%982.png, /images/dump%e9%97%ae%e9%a2%982.png 1.5x, /images/dump%E9%97%AE%E9%A2%982.png 2x"
+        data-sizes="auto"
+        alt="/images/dump%E9%97%AE%E9%A2%982.png"
+        title="upload successful" /></p>
+<h4 id="分析-1">分析</h4>
+<ul>
+<li>经过上面的处理，下面就开始分析问题了，首先还是看日志没有发现异常，于是和运维同学要了dump文件，运维同学说dump不用看了，容器的jvm内存只有1G？？？想到当时迁移系统时没改配置，使用的是默认的配置，修改了内存配置后解决问题，完事儿！那我写这篇文章也太水了吧，哈哈</li>
+<li>我要了dump文件，还是要看一下问题的，而且每次都是尾数164的容器出错，太诡异了</li>
+<li>使用JProFiler分析dump，可以看到百万数量级的引用4类，结合最大的对象来看，是一个超大的list，占用了80%的内存</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/dump%e9%97%ae%e9%a2%983.png"
+        data-srcset="/images/dump%E9%97%AE%E9%A2%983.png, /images/dump%e9%97%ae%e9%a2%983.png 1.5x, /images/dump%E9%97%AE%E9%A2%983.png 2x"
+        data-sizes="auto"
+        alt="/images/dump%E9%97%AE%E9%A2%983.png"
+        title="upload successful" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/dump%e9%97%ae%e9%a2%984.png"
+        data-srcset="/images/dump%E9%97%AE%E9%A2%984.png, /images/dump%e9%97%ae%e9%a2%984.png 1.5x, /images/dump%E9%97%AE%E9%A2%984.png 2x"
+        data-sizes="auto"
+        alt="/images/dump%E9%97%AE%E9%A2%984.png"
+        title="upload successful" /></p>
+<ul>
+<li>代码走查，list中的对象是事件的对象，用来同步数据用，类似消息队列，再结合日志来看，马上定位到了一个用户再操作实例的上线（更改实例中所有接口的状态，产生的事件是为了同步数据），并产生了300w+的事件，系统封装事件后终于把内存撑爆，进行FullGC，Stop The Word</li>
+<li>查看日志和用户操作的记录，我寻思对一个实例操作怎么会有这么多事件，不会是有死循环了吧；先排查了不是多线程的问题</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">for (Server server : servers) {
+    // 外层循环生产事件
+    eventList.add(buildEvent(server));
+    for (IfaceAlias ifaceAlias : ifaceAliasList) {// 内层循环与外层循环的数据一样
+        if (condition) {
+            eventList.add(buildEvent(ifaceAlias));
+        }
+    }
+}
+// 伪代码，只是为了展示代码结构
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>上线的逻辑是这样
+<ul>
+<li>a.数据库中修改实例的状态（两个sql用时3s内）</li>
+<li>b.封装要操作的事件</li>
+<li>c.发送事件 （调用远程服务，远程服务没有接受到事件的日志，定位在b中出现问题）</li>
+</ul>
+</li>
+<li>步骤b中，嵌套了两层循环来生产事件，逻辑如下（以前代码的逻辑，为什么这么做就不知道了，前辈的东西先不动），我查了线上的数据，这个实例中有282个接口，两层循环也就8w不到的事件啊
+<ul>
+<li>验证：将线上数据拷贝下来，本地测试，产生6000+的事件也不到8w啊？debug后才知道，两层嵌套循环符合条件的只有77个（业务问题不需要关心），77*77+外层循环生产的事件刚好6000+数量级，这和线上的百万数量级差好多哦，这多出来的是从哪来的呢</li>
+<li>想了两天没有结果，忍不住了，我找到用户的联系方式直接问，原来操作了20多个实例，发现用户操作的日志超长了，后面的内容截断了，让我以为就操作了一个实例</li>
+<li>验证：按照25个实例来算，每个实例两层循环需要重新计算外层循环x内存循环（25x77）x（25x77）结果证实300w+的数量级，破案</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结">总结</h3>
+<p>主要问题还是迁移系统之后jvm设置的内存有问题，连带找出其他bug（以外收获）</p>
+<ol>
+<li>封装事件代码有问题，两层嵌套循环产生很多重复事件（不是说之前写代码的人太水，而是业务复杂，刚好用户的数据结构特殊导致产生大量重复事件）</li>
+<li>用户操作的日志记录不完整，误导了排查错误的方向，这是个风险</li>
+<li>jvm内存设置的有问题，即使上面两个问题不修改，源码8g内存都用上的话运行5年的话也不会出问题</li>
+<li>直接查看jvm的配置或者找用户了解情况就不会走这么多弯路，这条里就是经验了，本文的精华都在这一句了</li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-05-28</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" data-title="震惊!系统崩了竟然因为这个" data-hashtags="Java"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" data-hashtag="Java"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" data-title="震惊!系统崩了竟然因为这个"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" data-title="震惊!系统崩了竟然因为这个"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" data-title="震惊!系统崩了竟然因为这个" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2020/05/%E9%9C%87%E6%83%8A%E7%B3%BB%E7%BB%9F%E5%B4%A9%E4%BA%86%E7%AB%9F%E7%84%B6%E5%9B%A0%E4%B8%BA%E8%BF%99%E4%B8%AA/" data-title="震惊!系统崩了竟然因为这个"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/05/aqs%E5%88%86%E6%9E%90/" class="prev" rel="prev" title="AQS分析"><i class="fas fa-angle-left fa-fw"></i>AQS分析</a>
+            <a href="/2020/06/%E8%93%A6%E7%84%B6%E5%9B%9E%E9%A6%96servlet/" class="next" rel="next" title="蓦然回首servlet">蓦然回首servlet<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

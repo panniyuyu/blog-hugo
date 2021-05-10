@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>将Hexo博客迁移到docker（二） - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="将Hexo博客迁移到docker（二）" />
+<meta property="og:description" content="本篇将进行迁移的第二阶段，主要步骤为 在git上备份博客中的文件 进入docker容器中还原 验证 修改Dockerfile 验证 在git上备份博客中" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-02-14T21:33:34&#43;08:00" />
+<meta property="article:modified_time" content="2020-02-14T21:33:34&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="将Hexo博客迁移到docker（二）"/>
+<meta name="twitter:description" content="本篇将进行迁移的第二阶段，主要步骤为 在git上备份博客中的文件 进入docker容器中还原 验证 修改Dockerfile 验证 在git上备份博客中"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" /><link rel="prev" href="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%B8%80/" /><link rel="next" href="https://example.com/2020/03/%E4%B8%80%E5%BC%A0%E5%9B%BE%E7%9C%8B%E6%87%82cpu/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "将Hexo博客迁移到docker（二）",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2020\/02\/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "容器","wordcount":  1680 ,
+        "url": "https:\/\/example.com\/2020\/02\/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C\/","datePublished": "2020-02-14T21:33:34+08:00","dateModified": "2020-02-14T21:33:34+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">将Hexo博客迁移到docker（二）</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E5%AE%B9%E5%99%A8/"><i class="far fa-folder fa-fw"></i>容器</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-02-14">2020-02-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1680 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#在git上备份博客中的文件">在git上备份博客中的文件</a></li>
+            <li><a href="#进入docker容器中还原">进入docker容器中还原</a></li>
+            <li><a href="#验证">验证</a></li>
+            <li><a href="#修改dockerfile">修改Dockerfile</a></li>
+            <li><a href="#验证-1">验证</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本篇将进行迁移的第二阶段，主要步骤为</p>
+<ul>
+<li>在git上备份博客中的文件</li>
+<li>进入docker容器中还原</li>
+<li>验证</li>
+<li>修改Dockerfile</li>
+<li>验证</li>
+</ul>
+<h4 id="在git上备份博客中的文件">在git上备份博客中的文件</h4>
+<p>hexo d 是将静态文件发布到git上，内容是 public 文件夹中的文件，hexo g 命令会重新生成静态文件；那么其他文件就是我要转移的文件了，将其他文件备份到git仓库中的新分支中 （.gitignore 里给出存放不需要备份的文件，至于为什么后面慢慢了解，本篇重点不在这） <a href="https://www.jianshu.com/p/153490a029a5" target="_blank" rel="noopener noreffer">参考这里</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 在github上新建分支 hexo-backup
+git clone ${git path}
+# 备份文件
+cp rf ${username}.github.io/* myblog
+# 除了 .git 以外的文件都删除
+cd ${username}.github.io
+mv .git ../
+rm -rf * 
+mv ../.git .
+# 复制刚刚备份的文件过来
+cp rf ../myblog/* ./
+# 准备gitignore 文件内容下面附
+vim .gitignore
+# 删除主题文件中的.git
+rm -rf /themes/next/.git                        
+
+# 更新分支
+git add .
+git commit -m &#39;初次提交&#39;
+git push origin hexo
+# 删除所有文件 后提交分支
+rm -rf *
+git add .
+git commit -m &#39;删除文件&#39;
+git push origin hexo
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># .gitignore 文件内容
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+public/
+.deploy*/
+</code></pre></td></tr></table>
+</div>
+</div><p>到这里已经将自己博客下面的文件都提交到git的hexo分支中了</p>
+<h4 id="进入docker容器中还原">进入docker容器中还原</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cd /usr/local
+git clone ${git path}
+cd /usr/local/${username}.github.io
+git checkout hexo
+# 由于我已经有myblog的文件夹了这离要删除一下
+rm -rf /usr/local/myblog
+mv /usr/local/${username}.github.io /usr/local/myblog
+# 安装package.json中的依赖
+# 修改下载源，安装更快
+npm config set registry https://registry.npm.taobao.org
+npm install hexo --save
+npm install hexo-admin --save
+npm install hexo-deployer-git --save
+npm install hexo-generator-archive --save
+npm install hexo-generator-baidu-sitemap --save
+npm install hexo-generator-category --save
+npm install hexo-generator-feed --save
+npm install hexo-generator-index --save
+npm install hexo-generator-search --save
+npm install hexo-generator-searchdb --save
+npm install hexo-generator-sitemap --save
+npm install hexo-generator-tag --save
+npm install hexo-helper-live2d --save
+npm install hexo-renderer-ejs --save
+npm install hexo-renderer-marked --save
+npm install hexo-renderer-stylus --save
+npm install hexo-server --save
+npm install hexo-tag-cloud --save
+npm install hexo-wordcoun --save
+
+# 重新生成静态文件
+cd /usr/local/myblog
+hexo clean
+hexo g
+hexo d
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="验证">验证</h4>
+<p>在浏览器中访问 http://${ip}:8088 效果相同即为成功</p>
+<h4 id="修改dockerfile">修改Dockerfile</h4>
+<p>因为要相册相关要用到python3，镜像中自带的时python2，所以要安装一下python3，在第二阶段的Dockerfile基础上增加下面操作</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 安装依赖
+RUN yum update -y &amp;&amp; yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make \
+# 备份原始的python
+&amp;&amp; mv /usr/bin/python /usr/bin/python.bak \ 
+# 下载解压
+&amp;&amp; cd /usr/local \
+&amp;&amp; wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tar.xz \
+&amp;&amp; tar -xvJf  Python-3.6.2.tar.xz \
+# 编译安装
+&amp;&amp; cd Python-3.6.2 \
+&amp;&amp; ./configure prefix=/usr/local/python3 \
+&amp;&amp; make &amp;&amp; make install \
+&amp;&amp; rm -rf /usr/local/Python-3.6.2.tar.xz \
+# 添加软链
+&amp;&amp; ln -s /usr/local/python3/bin/python3 /usr/bin/python3 \
+&amp;&amp; ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3 \
+# 安装依赖
+&amp;&amp; pip3 install Pillow \
+
+# 迁移博客 由于clone速度极其慢，改用本地先clone好复制过去
+&amp;&amp; rm -rf /usr/local/myblog
+COPY myblog /usr/local/myblog/
+
+# 安装package.json中的依赖
+# 修改下载源，安装更快
+RUN npm config set registry https://registry.npm.taobao.org \
+&amp;&amp; npm install hexo --save \
+&amp;&amp; npm install hexo-admin --save \
+&amp;&amp; npm install hexo-deployer-git --save \
+&amp;&amp; npm install hexo-generator-archive --save \
+&amp;&amp; npm install hexo-generator-baidu-sitemap --save \
+&amp;&amp; npm install hexo-generator-category --save \
+&amp;&amp; npm install hexo-generator-feed --save \
+&amp;&amp; npm install hexo-generator-index --save \
+&amp;&amp; npm install hexo-generator-search --save \
+&amp;&amp; npm install hexo-generator-searchdb --save \
+&amp;&amp; npm install hexo-generator-sitemap --save \
+&amp;&amp; npm install hexo-generator-tag --save \
+&amp;&amp; npm install hexo-helper-live2d --save \
+&amp;&amp; npm install hexo-renderer-ejs --save \
+&amp;&amp; npm install hexo-renderer-marked --save \
+&amp;&amp; npm install hexo-renderer-stylus --save \
+&amp;&amp; npm install hexo-server --save \
+&amp;&amp; npm install hexo-tag-cloud --save \
+&amp;&amp; npm install hexo-wordcount --save \
+
+# 重新生成静态文件
+&amp;&amp; cd /usr/local/myblog \
+&amp;&amp; hexo clean \
+&amp;&amp; hexo g
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="验证-1">验证</h4>
+<p>启动docker容器 绑定端口映射 8088:80 浏览器访问 http://${ip}:8088 查看效果无误，完成</p>
+<p><strong>最后总结一下需要迁移的步骤</strong></p>
+<ul>
+<li>git push origin hexo推送博客所有文件</li>
+<li>编辑Dockerfile</li>
+<li>在Dokerfile目录下git clone 博客文件 再切换hexo分支 重命名为myblog</li>
+<li>在Dockerfile目录下编辑nginx.conf文件</li>
+<li>使用Dockerfile生成镜像</li>
+<li>启动容器 绑定端口</li>
+<li>进入容器启动nginx</li>
+<li>使用Dockerfile生成镜像</li>
+<li>启动容器 绑定端口</li>
+</ul>
+<p>是不是迁移起来非常简单，可以将生成的镜像备份成tar包，在任意的服务器上安装docker后，还原镜像启动容器即可</p>
+<p><em>相册相关</em></p>
+<p>我的相册是参考<a href="https://malizhi.cn/HexoAlbum/" target="_blank" rel="noopener noreffer">这里</a>弄得；我将它移至博客文件的hexo分支，一起备份起来，要上传新的文件运行目录中的tool.py脚本，将照片裁剪后上传至github仓库，这时照片就有了URL，在博客中就可以看到了</p>
+<p><em>发布博客相关</em></p>
+<ul>
+<li>docker容器中的 /usr/local/source/_posts/ 目录下的文件名为乱码，下面方法可以解决，但是我这里没有成功，通过tab补全是正常的ls和ll看就有问题</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">yum -y install convmv
+
+convmv -f GBK -t UTF-8 --notest -r /usr/local/source/_posts/
+</code></pre></td></tr></table>
+</div>
+</div><p>所有我觉得在宿主机建立文件映射，然后进入docker中hexo g -d更新</p>
+<ul>
+<li>hexo d 会失败，这里要重新生成sshkey</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ssh-keygen -t rsa -C &#34;${email}&#34;
+# 拷贝sshkey到github中
+# 配置
+git config --global user.name &#34;${username}&#34;
+git config --global user.email &#34;${email}&#34;  
+</code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-02-14</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" data-title="将Hexo博客迁移到docker（二）" data-hashtags="容器"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" data-hashtag="容器"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" data-title="将Hexo博客迁移到docker（二）"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" data-title="将Hexo博客迁移到docker（二）"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" data-title="将Hexo博客迁移到docker（二）" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%BA%8C/" data-title="将Hexo博客迁移到docker（二）"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E5%AE%B9%E5%99%A8/">容器</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/02/%E5%B0%86hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0docker%E4%B8%80/" class="prev" rel="prev" title="将Hexo博客迁移到docker（一）"><i class="fas fa-angle-left fa-fw"></i>将Hexo博客迁移到docker（一）</a>
+            <a href="/2020/03/%E4%B8%80%E5%BC%A0%E5%9B%BE%E7%9C%8B%E6%87%82cpu/" class="next" rel="next" title="一张图看懂CPU">一张图看懂CPU<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

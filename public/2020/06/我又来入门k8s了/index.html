@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>我又来入门k8s了 - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="我又来入门k8s了" />
+<meta property="og:description" content="引言 之前分析过Docker容器技术，在容器技术很快的被广大使用之后，对于业务复杂的公司来说往往需要非常多的容器，而每次都需要docker ru" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-30T22:49:30&#43;08:00" />
+<meta property="article:modified_time" content="2020-06-30T22:49:30&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="我又来入门k8s了"/>
+<meta name="twitter:description" content="引言 之前分析过Docker容器技术，在容器技术很快的被广大使用之后，对于业务复杂的公司来说往往需要非常多的容器，而每次都需要docker ru"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" /><link rel="prev" href="https://example.com/2020/06/%E4%B8%80%E5%B9%B4%E8%8F%9C%E9%B8%A1%E5%B8%A6%E4%BD%A0%E7%9C%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1/" /><link rel="next" href="https://example.com/2020/10/spring%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%80%BB%E7%BB%93/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "我又来入门k8s了",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2020\/06\/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "k8s","wordcount":  2693 ,
+        "url": "https:\/\/example.com\/2020\/06\/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86\/","datePublished": "2020-06-30T22:49:30+08:00","dateModified": "2020-06-30T22:49:30+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">我又来入门k8s了</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E5%AE%B9%E5%99%A8/"><i class="far fa-folder fa-fw"></i>容器</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-06-30">2020-06-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2693 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#引言">引言</a></li>
+        <li><a href="#架构">架构</a></li>
+        <li><a href="#api">API</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="引言">引言</h3>
+<p>之前分析过Docker容器技术，在容器技术很快的被广大使用之后，对于业务复杂的公司来说往往需要非常多的容器，而每次都需要docker run或者restart的话也是非常麻烦的而且人操作的话还容易出错，这就需要一个容器管理的一个组件，比如docker swarm、mesos和k8s，最终k8s脱颖而出称为大多数人的选择，而且k8s还被称为PaaS平台的操作系统，那么k8s能做什么呢？</p>
+<p>Pod，是k8s提出的概念，是k8s的最小调度单位，Pod中可以有一个容器或者多个容器</p>
+<ul>
+<li>Pod调度；k8s采用声明式API的方式，用户只需编写yaml文件描述所期望的Pod状态(比如2个容器，4c8g)，k8s根据所期望的Pod状态进行部署和维护</li>
+<li>健康检查自动恢复；监控集群中Pod的状态发现异常Pod进行迁移或重启</li>
+<li>动态扩缩容；检查Pod负载高时动态扩容进行负载均衡；反之减少容器节省资源</li>
+<li>负载均衡</li>
+</ul>
+<p>类似于Pod的运维系统，有了这些功能完全可以将自己的系统托管给k8s，可以减轻运维人员的工作</p>
+<h3 id="架构">架构</h3>
+<p>master+slave的架构，master节点负责系统逻辑的处理，调度，slave节点来干活，与spark集群的模式是一样的</p>
+<ul>
+<li>master节点组件
+<ul>
+<li>etcd：分布式kv数据库，用于保存数据(yaml文件)和集群的状态，其他组件都通过api server向etcd读写数据，理解为用来保存状态的数据层；etcd还是高可用的分布式数据库可以保证master的高可用</li>
+<li>api server：提供api服务，负责各个模块之间的通信，不同组件之间交互都需要经过api server，理解为数据总线</li>
+<li>controller manager：负责维护集群的状态，确保集群的状态与etcd中的状态保持一致，理解为MVC中的Controller层；例如健康检查，slave节点中的kubectl会向master节点(通过api server)定期报告节点中Pod的状态，相当于slave向master发心跳，心跳状态会保存在etcd中，master节点中的controller manager会定期从etcd中获取slave的状态，针对这些状态与etcd中保存的期望状态比对进行下一步操作，通过api server通知scheduler组件创建一个调度任务发送给slave节点</li>
+<li>scheduler：负责调度，将pod调度到合适的node中；创建pod资源的时候，通过etcd中的状态调度到合适的slave节点中，更新或者删除也是这样</li>
+</ul>
+</li>
+<li>slave组件
+<ul>
+<li>kubelet：可以理解为通过实现了一些接口来对slave节点进行管控操作；负责与master通信，通过CRI(Container Runtime Interface)操作容器运行时(container runtime)，相当于是slave节点中的控制器，理解为通过CRI&quot;发送指令&quot;到容器运行时，对当前节点中pod做CRUD操作；还负责配置当前slave节点的网络和存储，通过调用网络插件和存储插件为容器配置网络（CNI Container Networking Interface）和持久化存储（CSI Container Storage Interface）；</li>
+<li>kube-proxy：用于service的服务发现和负载均衡，通过iptable机制；service是相同服务的的多个pod集合，相当于一个VIP职责，不需要关心具体服务的ip只需访问服务的域名，由kube-proxy来转发到具体的pod</li>
+<li>container runtime：真正对pod做CRUD操作的组件，相当于kubelet的slave</li>
+</ul>
+</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/k8s.png"
+        data-srcset="/images/k8s.png, /images/k8s.png 1.5x, /images/k8s.png 2x"
+        data-sizes="auto"
+        alt="/images/k8s.png"
+        title="k8s" /></p>
+<p>如上图在slave节点中kubelet扮演控制器的角色来操作通过进行时对Pod进行操作，而kube-proxy是将访问pod的流量转发到相应的pod中，一个pod在启动之前k8s会在pod中先启动一个初始容器为这个容器添加Namespace，network，Volume这些设置，再将后启动的容器添加到初始容器的Namespace中去，这个初始容器用来进行进程隔离，与Pod具有相同的生命周期，通常Pod中容器的访问，日志收集等操作都会由这个容器来完成，也就是sidecar容器；访问某个pod的时候首先会经过iptables的规则转发到Pod的sidecar容器里，再由sidecar容器转发到目标应用容器中，sidecar可以天然用来做微服务中的流量控制，服务治理，灰度发布等功能</p>
+<p>工作原理</p>
+<ul>
+<li>用户提交了yaml文件给apiserver</li>
+<li>apiserver会将数据保存到etcd中，再通知scheduler有容器需要被调度</li>
+<li>scheduler根据配置选择合适的node，返回给apiserver</li>
+<li>apiserver将结果同步到etcd中，再通知对应node中的kubectl</li>
+<li>kubectl收到通知后调用container runtime来真正去启动这个配置的容器，调用storage plugin配置存储，调用network plugin配置网络</li>
+</ul>
+<h3 id="api">API</h3>
+<ul>
+<li>Pod；Pod是k8s的最小调度单位，Pod中可以有一个容器或者多个容器；前面分析过docker是通过Namespace和Cgroup技术来进行进程的隔离，是基于单进程模型并不具备管理多进程的能力，（参考<a href="https://zhuanlan.zhihu.com/p/83482791" target="_blank" rel="noopener noreffer">这里</a>大概是是无法回收僵尸进程和孤儿进程的资源的意思因为回收进程资源需要向父进程发送一个信号）；k8s通过将多个容器加入到同一个Namespace中并给头号进程赋予了管理多进程的能力，所以说相较于docker容器来说k8s的Pod概念更像是虚拟机一样，提供了传统虚拟机到容器环境的完美迁移方案</li>
+<li>Deployment；对Pod的一个抽象，可以定义Pod的副本数量，版本，可以用Deployment来描述一个应用集群的状态</li>
+<li>ReplicaSet；用来控制Pod的版本，Deployment不会之间控制Pod，而是通过ReplicaSet来间接控制Pod，一个Pod的版本对应一个RS（可以实现金丝雀发布，蓝绿发布）</li>
+<li>StatefulSet；有状态的Pod进行编排；Pod之间有拓扑关系的拓扑状态或者存储状态；</li>
+<li>DaemonSet；集群中运行一个DaemonPod，每个Node中有且只有一个，如果有新节点加入集群会自动创建；比如node中的各种插件（网络，存储，监控，日志）</li>
+<li>Service；提供了一个或者多个Pod的访问地址，由于Pod的地址可能会变，通过域名可以做到不依赖于固定的ip地址访问Pod，相当于VIP，由kube-proxy+iptables来共同实现</li>
+<li>Job；一次性任务，运行完成后退出</li>
+<li>CronJob；定时任务，用于离线计算</li>
+<li>等等等等，只是了解到了这些，还有很多去查看官方文档吧</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-06-30</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" data-title="我又来入门k8s了" data-hashtags="k8s"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" data-title="我又来入门k8s了"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" data-title="我又来入门k8s了"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" data-title="我又来入门k8s了" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2020/06/%E6%88%91%E5%8F%88%E6%9D%A5%E5%85%A5%E9%97%A8k8s%E4%BA%86/" data-title="我又来入门k8s了"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/k8s/">k8s</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/06/%E4%B8%80%E5%B9%B4%E8%8F%9C%E9%B8%A1%E5%B8%A6%E4%BD%A0%E7%9C%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="prev" rel="prev" title="一年菜鸡带你看微服务"><i class="fas fa-angle-left fa-fw"></i>一年菜鸡带你看微服务</a>
+            <a href="/2020/10/spring%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%80%BB%E7%BB%93/" class="next" rel="next" title="Spring中bean的生命周期总结">Spring中bean的生命周期总结<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

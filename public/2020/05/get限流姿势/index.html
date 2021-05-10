@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>get限流姿势 - LoveIt</title><meta name="Description" content="关于 LoveIt 主题"><meta property="og:title" content="get限流姿势" />
+<meta property="og:description" content="限流通常用作服务的降级策略，以牺牲一部分请求的方式换来系统的部分可用；在高并发的场景下保护系统不会挂掉，比如大促、秒杀这类的场景保护像交易这" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-14T21:06:35&#43;08:00" />
+<meta property="article:modified_time" content="2020-05-14T21:06:35&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="get限流姿势"/>
+<meta name="twitter:description" content="限流通常用作服务的降级策略，以牺牲一部分请求的方式换来系统的部分可用；在高并发的场景下保护系统不会挂掉，比如大促、秒杀这类的场景保护像交易这"/>
+<meta name="application-name" content="YyWang&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="YyWang&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" /><link rel="prev" href="https://example.com/2020/05/%E5%88%9D%E8%AF%86guava-cache/" /><link rel="next" href="https://example.com/2020/05/threadlocal%E5%88%86%E6%9E%90/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "get限流姿势",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/2020\/05\/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/example.com\/images\/Apple-Devices-Preview.png",
+                            "width":  3200 ,
+                            "height":  2048 
+                        }],"genre": "posts","keywords": "Java","wordcount":  1468 ,
+        "url": "https:\/\/example.com\/2020\/05\/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF\/","datePublished": "2020-05-14T21:06:35+08:00","dateModified": "2020-05-14T21:06:35+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  528 ,
+                    "height":  560 
+                }},"author": {
+                "@type": "Person",
+                "name": "YyWang"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LoveIt"><span class="header-title-pre"><i class='far fa-surprise'></i></span>YyWang&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/dillonzq/LoveIt" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">get限流姿势</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.yywang.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>YyWang</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/java/"><i class="far fa-folder fa-fw"></i>Java</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-05-14">2020-05-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1468 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#计数器">计数器</a>
+          <ul>
+            <li><a href="#总结">总结</a></li>
+          </ul>
+        </li>
+        <li><a href="#漏桶算法">漏桶算法</a>
+          <ul>
+            <li><a href="#实现">实现</a></li>
+            <li><a href="#总结-1">总结</a></li>
+          </ul>
+        </li>
+        <li><a href="#令牌桶">令牌桶</a>
+          <ul>
+            <li><a href="#实现-1">实现</a></li>
+            <li><a href="#总结-2">总结</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>限流通常用作服务的降级策略，以牺牲一部分请求的方式换来系统的部分可用；在高并发的场景下保护系统不会挂掉，比如大促、秒杀这类的场景保护像交易这样的核心服务可用，通过学习限流的代码之后，掌握了通常的限流姿势，分享一下</p>
+<h3 id="计数器">计数器</h3>
+<p>类似于滑动窗口，给定一个时间段的最大请求数（窗口，比如1秒最多100个请求），再将窗口设置多个小段（一个时间的偏移量，比如100ms，一个窗口就被分成了10小段）每一小段记录当前正在处理的请求数量，每次移动一小段，滑出的一段中的请求数量被释放，新进入窗口的一段最多可以处理被释放的请求数量</p>
+<h4 id="总结">总结</h4>
+<ul>
+<li>简单粗暴好实现，偏移量取值越小限流越精细，每次滑动需要获取当前一段中的请求数，计算窗口中的总的请求数是否超过限定值</li>
+<li>如果在中间一小段涌入大量请求到达限定值，那就需要等待这段滑出窗口后才能处理新的请求，从宏观的角度来说，可以保证窗口期内的平均处理请求的量，但是从微观来看处理请求的方式不均衡，存在风险</li>
+</ul>
+<h3 id="漏桶算法">漏桶算法</h3>
+<p>一个破桶一边以一个速度漏水（处理请求）一边以一个速度往里加水（新的请求到来）；假设向桶里加水的速度很快（大量新的请求到来）一会就把桶占满了，此后再向桶里加水就会漏出去（新的请求会被丢弃）</p>
+<h4 id="实现">实现</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 生产者和消费者
+// 用阻塞队列来实现桶
+BlockingQueue bucket = new BlockingQueue(MAX_SIZE);
+// 请求来 -&gt; 入队
+if (!bucket.offer();{
+    // 大于桶的最大值入队失败，做进一步操作（拒绝、保存到mq或者db中）
+}
+
+while (true) {
+    bucker.take();
+    // 出队成功 异步处理请求 等待下一个周期后再次从队列中获取请求，队列为空阻塞在原地
+    sleep(10);
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="总结-1">总结</h4>
+<ul>
+<li>通过计算每次请求的最小时间间隔，当大量的请求到来时让系统以一个恒定的速度去处理请求，保护系统不会被超过本身处理能力的请求打挂</li>
+<li>不足之处是不够优雅；当某个时间点有大量的请求到来很快将桶塞满，多于的请求直接丢弃，而突然有大量请求的场景有很多（例如秒杀，大促等）这些都是正常的请求，不应该被丢弃；</li>
+</ul>
+<h3 id="令牌桶">令牌桶</h3>
+<p>以一个速度向桶里生产令牌，当桶内令牌满了时将暂停生产，处理请求需要从桶里拿到令牌才可以，如果桶里没有令牌拒绝该请求（通常的做法是返回一个限流信息，类似于非阻塞的方式）</p>
+<h4 id="实现-1">实现</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 一个请求周期的类
+class Cycle{
+    lastTime;// 上一次请求的时间戳
+    curTokenCount;// 当前桶内有效token数量
+}
+
+public boolean getLicense() {
+	// 是否可以执行请求
+	boolean license = false;
+	do {
+	    // 请求到来，计算从限流开始到现在的时间间隔，通过当前时间戳-开始时间戳
+		curTime = currentTime - startTime;
+		// 计算从上一次请求开始到现在的时间间隔，lastTime是从限流开始到上一次请求的时间间隔
+		curDuration = curTime - lastTime;
+		// 计算这段时间产生的令牌数量
+		incrementTokenCount = curDuration * createTokenSpeed;
+		// 计算当前时间内有效的token数量 curTokenCount是当前桶里的token数量
+		curTokenCount = Min(maxTokenCount, currentTokenCount + incrementTokenCount);
+		// 如果有效的token数量大于0，数量减一处理请求，
+		if (curToken &gt; 0) {
+		    incrementTokenCount--;
+		    license = true;
+		} 
+		lastTime = curTime;
+	} while (!CAS(curCycle, new Cycle(lastTime, curTokenCount)));// CAS操作设置当前请求周期为下一个周期，操作成功进入下一周期，返回是否可以执行请求
+	// 要进入下一周期需要CAS操作lastTime和curTokenCount两个变量，分别CAS不能保证一致性，所以封装成一个对象做CAS操作
+	return license;
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="总结-2">总结</h4>
+<ul>
+<li>相较与漏桶算法，令牌桶可以应对一些突发流量的变大，最大同时处理令牌桶中最大令牌数量的请求，所有设置令牌桶中最大令牌数量要非常小心，否则会把服务器压垮</li>
+<li>Guava中实现了漏桶算法的限流器，还具有一定的超额消费的能力，更灵活了一下，具体实现原理也差不多，可以直接用</li>
+</ul>
+<p>以上是单机模式下的限流实现，只需要拦截每次请求，执行上面的逻辑根据是否满足条件决定处不处理请求，分布式环境下的限流可以使用lua+redis来实现</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-05-14</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" data-title="get限流姿势" data-hashtags="Java"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" data-hashtag="Java"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" data-title="get限流姿势"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" data-title="get限流姿势"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" data-title="get限流姿势" data-ralateuid="1745299275"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://example.com/2020/05/get%E9%99%90%E6%B5%81%E5%A7%BF%E5%8A%BF/" data-title="get限流姿势"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/05/%E5%88%9D%E8%AF%86guava-cache/" class="prev" rel="prev" title="初识Guava Cache"><i class="fas fa-angle-left fa-fw"></i>初识Guava Cache</a>
+            <a href="/2020/05/threadlocal%E5%88%86%E6%9E%90/" class="next" rel="next" title="ThreadLocal分析">ThreadLocal分析<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">yywang</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
