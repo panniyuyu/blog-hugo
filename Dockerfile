@@ -14,4 +14,4 @@ RUN git clone --recursive https://github.com/panniyuyu/blog-hugo.git --progress 
 
 WORKDIR /usr/local/blog/blog-hugo
 
-CMD ["run.sh"] 
+CMD sh run.sh 
