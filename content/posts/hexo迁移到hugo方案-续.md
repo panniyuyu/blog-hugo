@@ -59,16 +59,16 @@ hugo server -p 1313
 docker run -di -p 1313:1313 -v /usr/local/blog/blog-hugo:/usr/local/blog/blog-hugo --name='blog-hugo' blog-hugo:2021-05-10
 ```
 
-### 踩坑
+#### 踩坑
 
-#### 坑1 mac 上宿主机和容器见网络不通
+##### 坑1 mac 上宿主机和容器见网络不通
 
 上述步骤完成后，首先再上云之前所有步骤都在本地搞，启动容器之后 curl ${dockerIp}:${port} 是没有反应的，随后进入容器 curl localhost:${port}
 这是没问题的有HTML页面，所以问题就出在宿主机和容器网络不通，退出容器在 mac 上 ping 容器的 ip 果然是不通的。mac 端的 docker desktop 默认是
 不使用网桥的，所以默认与容器间网络是不通的 [这里](https://docs.docker.com/docker-for-mac/networking/) 有详细的说明，解决方法自行搜索，
 我比较懒没有解决，手动狗头
 
-#### 坑2 hugo server 参数
+##### 坑2 hugo server 参数
 
 踩到第一个坑以后，跳过本地部署的阶段，直接上云，在运行容器后 ping 容器 ip 网络是通的，即验证了坑1的问题所在，接着进行 curl ${dockerIp}:${port}
  后还是没有响应，进入容器 curl 是正常的，这个坑浪费了很多的时间，其实很简单，就是 hugo server 命令的一个参数指定 hugo 绑定的主机，即默认只有
@@ -78,14 +78,15 @@ docker run -di -p 1313:1313 -v /usr/local/blog/blog-hugo:/usr/local/blog/blog-hu
 --bind string            interface to which the server will bind (default "127.0.0.1")
 ```
 
-#### 坑3 nginx
+##### 坑3 nginx
 
 上面两个坑填完后，之前 hexo 的博客有 Nginx 容器做转发，就计划原有的域名加一个 /hugo 的 path 就可以两个容器都可以用了，还能省下买域名的钱，理
 想很丰满，也确实达到了 想要的效果，但是，但是，但是，当我看某一篇文章时，url 是会变的呀，且不说两个容器中文章的 url 格式不一样，就算文章的 url 
 配置成一样的，可 Nginx 不知道当前请求是来自 hugo 还是 hexo 怎么转发？或者可以配置公网 ip host 和域名区分，又或者按照有没有 www 前缀来进行转
 发，这也太挫了，还是老实买个域名通过主机名路由吧。
 
-    
+#### 最后
+
 这三个坑都填上后 hugo 博客就可以用了，再发新的文章就可以直接上传到 git 上（文章在 content/posts/ 目录，图片在 static/images/ 目录），再在
 服务器上 git pull 然后 hugo 就热更新了，比 hexo 还需要 docker restart 一下简直太爽了。再展望一下，后续打算 hugo 和 hexo 一起维护，再写文
 章就先不写头信息，因为两者头的格式不一样，可以新建一个仓库只写 md 文件，push 到仓库后触发一个 pipeline 将 md 文件添加不同格式的头信息，分别更
