@@ -5,8 +5,8 @@ authorLink: http://www.yywang.cool #新增
 date: 2021-05-08T21:17:12+08:00 #修改格式
 lastmod: 2021-05-08T21:17:12+08:00 #新增
 draft: false #新增
-tags: ["istio"] #修改格式
-categories: ["istio"] #修改格式
+tags: ["Istio"] #修改格式
+categories: ["Istio"] #修改格式
 featuredImagePreview: #新增
 ---
 
