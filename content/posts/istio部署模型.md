@@ -1,3 +1,14 @@
+---
+title: Istio 部署模型
+author: YyWang
+authorLink: http://www.yywang.cool #新增
+date: 2021-08-30T20:17:12+08:00 #修改格式
+lastmod: 2021-08-30T20:17:12+08:00 #新增
+draft: false #新增
+tags: ["Istio"] #修改格式
+categories: ["Istio"] #修改格式
+featuredImagePreview: #新增
+---
 ## istio 部署模型总结
 istio 存在多种形式的部署模型来满足不同的实际情况，官方也有详细的介绍文档 [中文文档](https://istio.io/latest/zh/docs/ops/deployment/deployment-models/#identity-and-trust-models)
 这里简单总结一下，文档中的部署模型是分成了四个不同的维度来介绍的，分别是集群、网络、控制平面、网格
